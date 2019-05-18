@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <header>
+        <div class="page-header container">
+            <h1>亡者农药 <small>英雄管理器</small></h1>
+        </div>
+    </header>
+    <div class="container hero-list">
+        <a class="btn btn-success pull-right add_btn" href="http://127.0.0.1:5000/add.html">添加英雄</a>
+        <table class="table table-hover">
+           
+        </table>
+    </div>
+
+    <script type="text/html" id='temp'>
+
+        <thead>
+                <th>编号</th>
+                <th>名称</th>
+                <th>性别</th>
+                <th>创建时间</th>
+                <th>操作</th>
+            </thead>
+            <tbody>
+
+                <%for(var a = 0; a < message.length; a++){%>
+                <tr>
+                    <td><%=message[a].id%></td>
+                    <td><%=message[a].name%></td>
+                    <td><%=message[a].gender%></td>
+                    <td><%=message[a].ctime%></td>
+                    <td>
+                        <a href="http://127.0.0.1:5000/info.html?id=<%=message[a].id%>">查看</a>
+                        <a href="http://127.0.0.1:5000/edit.html?id=<%=message[a].id%>">编辑</a>
+                        <a class='del' hid='<%=message[a].id%>' href="javascript:void(0)">删除</a>
+                    </td>
+                </tr>
+                <%}%>
+            </tbody>
+
+    </script>
+
+    <script src="/jquery/dist/jquery.min.js"></script>
+    <script src="/art-template/lib/template-web.js"></script>
+    <script>
+        $.ajax({
+            type: 'get',
+            url: 'http://127.0.0.1:5000/api/getheros',
+            dataType: 'json',
+            success: function (data) {
+                // console.log(data);
+                var html = template('temp',data);
+                $('table').html(html);
+            }
+        });
+
+        $('table').on('click','.del',function(){
+        var id = $(this).attr('hid');
+            console.log(id);
+            $.ajax({
+                type:'get',
+                url:'http://127.0.0.1:5000/api/delhero',
+                dataType:'json',
+                data:{
+                    id:id
+                },
+                success:function(res){
+                    // console.log(res);
+                    if(res.err_code==0){
+                        alert('删除成功');
+                        setTimeout(function(){
+                            location.href='http://127.0.0.1:5000/test.html';
+                        },1000);
+                    }
+                }
+            })
+        })
+
+
+        
+    </script>
+</body>
+
+</html>

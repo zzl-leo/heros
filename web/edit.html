@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+    <script src="/jquery/dist/jquery.min.js"></script>
+    <script src="/axios/dist/axios.min.js"></script>
+    <script src="/art-template/lib/template-web.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>
+            <a href="/">亡者农药</a>
+            <small>编辑新英雄</small>
+        </h1>
+        <hr>
+
+        <form id="form">
+
+        </form>
+
+    </div>
+
+    <script type="text/html" id="temp">
+        <input type="hidden" name="id" value="">
+
+        <div class="form-group">
+            <label>名称：</label>
+            <input type="text" name="name" class="form-control hname" value="<%=data.message[0].name%>">
+        </div>
+
+        <div class="form-group">
+            <label>性别：</label>
+            <label>
+                <input type="radio" name="gender" value="男" <%=data.message[0].gender == '男' ? 'checked':''%>>男</label>
+            <label>
+                <input type="radio" name="gender" value="女" <%=data.message[0].gender == '女' ? 'checked':''%>>女</label>
+        </div>
+
+        <!-- <input type="submit" value="编辑新英雄" class="btn btn-primary"> -->
+        <a class="edit" href="javascript:void(0)">编辑新英雄</a>
+    </script>
+
+    <script>
+        var a = new URLSearchParams(location.search);
+        var id = a.get('id');
+        // $.ajax({
+        //     type: 'get',
+        //     url: 'http://127.0.0.1:5000/api/gethero',
+        //     dataType: 'json',
+        //     data: {
+        //         id: id
+        //     },
+        //     success: function (data) {
+        //         if (data.err_code == 0) {
+        //             var html = template('temp', data);
+        //             $('#form').html(html);
+        //             console.log(data);
+        //         } else {
+        //             alert(111);
+        //         }
+        //     }
+        // });
+        axios('http://127.0.0.1:5000/api/gethero',{
+            params:{
+                id:id
+            }
+        })
+        .then(function(res){
+            // console.log(res);
+            if(res.status==200 && res.data.err_code==0){
+                var html = template('temp', res);
+                    $('#form').html(html);
+            }
+        })
+        .catch(function(err){
+            console.log(err);
+        })
+
+        $('#form').on('click','.edit',function(){
+            // 获取信息：
+            var gender = $("input[type='radio'][name='gender']:checked").val();
+            var name = $('.hname').val();
+            $.ajax({
+                type:'post',
+                url:'http://127.0.0.1:5000/api/updatehero',
+                dataType:'json',
+                data:{
+                    id:id,
+                    gender:gender,
+                    name:name
+                },
+                success:function(data){
+                    if(data.err_code == 0){
+                        alert('信息编辑成功');
+                        setTimeout(function(){
+                            location.href = 'http://127.0.0.1:5000/test.html';
+                        },1000);
+                    }else{
+                        alert(2);
+                    }
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>
+            <a href="/">亡者农药</a>
+            <small>添加新英雄</small>
+        </h1>
+        <hr>
+
+        <form id="form">
+
+            <div class="form-group">
+                <label>名称：</label>
+                <input type="text" name="name" class="form-control hname">
+            </div>
+
+            <div class="form-group">
+                <label>I &nbsp; D：</label>
+                <input type="number" name="id" class="form-control hid">
+            </div>
+
+            <div class="form-group">
+                <label>性别：</label>
+                <label>
+                    <input type="radio" name="gender" value="男" checked>男</label>
+                <label>
+                    <input type="radio" name="gender" value="女">女</label>
+            </div>
+
+            <!-- <input type="submit" value="添加新英雄" class="btn btn-primary"> -->
+            <a  class="addhero" href="javascript:void(0)">添加新英雄</a>
+
+        </form>
+
+    </div>
+
+    <script>
+        $('.addhero').on('click',function(){
+            // 获取输入的信息；
+            var gender = $("input[type='radio'][name='gender']:checked").val();
+            var id = $('.hid').val();
+            var name = $('.hname').val();
+
+            $.ajax({
+                url:'http://127.0.0.1:5000/api/addhero',
+                type:'post',
+                dataType:'json',
+                data:{
+                    gender:gender,
+                    id:id,
+                    name:name
+                },
+                success:function(data){
+                    if(data.err_code == 0){
+                        alert('英雄添加成功');
+                        setTimeout(function(){
+                            location.href = 'http://127.0.0.1:5000/test.html';
+                        },1500)
+
+                    }
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>
